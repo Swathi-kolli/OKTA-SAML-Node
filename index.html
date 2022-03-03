@@ -37,137 +37,95 @@
   <body>
 
     <script>
-        function handleSave(e) {
-            console.log("dataaaaa", {user: e.path[0].dataset.id});
-            const payload = {user: e.path[0].dataset.id};
-            console.log("payload", payload);
+            function handleClick(e) {
 
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: payload,
-            };
-            fetch('https://dev-18365449.okta.com/api/v1/sessions/me', {method: 'GET',credentials: 'include'}).then(response => response.json())
-            .then((data) => {
-                console.log("okta session response", data)
+                var form = document.createElement("form");
+                form.setAttribute("method", 'post');
+                form.setAttribute("action", '/save/users');
+
                 
-            });
-            document.getElementById("myForm").submit();
 
-            // fetch('/save/users', options)
-        
-        }
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", 'user');
+                hiddenField.setAttribute("value", e.getAttribute('data-id'));
 
+                var hiddenField1 = document.createElement("input");
+                hiddenField1.setAttribute("type", "hidden");
+                hiddenField1.setAttribute("name", 'session');               
 
-
+                fetch('https://dev-18365449.okta.com/api/v1/sessions/me', {method: 'GET',credentials: 'include'})
+                .then(response => {
+                return response.json();
+                })
+                .then(data => {
+                    hiddenField1.setAttribute("value",data.id);
+                    
+                    form.appendChild(hiddenField1);
+                    form.appendChild(hiddenField);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                })                          
+            }
 
 
     </script>
+
+        
     <div>
-      <!-- <form action="/save/users", method="post">
-        <label for="users">Choose a user:</label>
-        <select name="user" id="user">
-          <option value="murthy_avsn@tecnics.com">murthy_avsn@tecnics.com</option>
-          <option value="swathi_kolli@tecnics.com">swathi_kolli@tecnics.com</option>
-          <option value="niyati_patel@tecnics.com">niyati_patel@tecnics.com</option>
-          <option value="aira_reddy@tecnics.com">aira_reddy@tecnics.com</option>
-        </select>
-        <br /><br />
-        <input type="submit" value="Submit"/>
-      </form> -->
 
       <div class="container w-50">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Choose an account</h5>
           </div>
-          <form id="myForm", action="/save/users", method="post">
 
-          <ul class="list-group list-group-flush", name="user", id="user">
-            <a
-              href="#"
-              class="list-group-item list-group-item-action form-control"
-              aria-current="true"
-            >
-              <div
-                class="d-flex w-100 justify-content-between align-items-center"
-              >
-                <div class="d-flex flex-column w-100">
-                  <h5 class="mb-1" >murthy_avsn@tecnics.com</h5>
-                  <p class="mb-1">Murthy</p>
-                </div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
+          <ul class="list-group list-group-flush">
+            <% users.forEach(function(item,index){ %>
+                <li
+                  class="list-group-item list-group-item-action form-control"
+                  aria-current="true"
+                  id="user"
+                >
+                  <div
+                    class="d-flex w-100 justify-content-between align-items-center"                   
+                  >
+                    <div class="d-flex flex-column w-100" >
+                      <h5 class="mb-1" ><%= item %> </h5>
+                    </div>
+                <button
+                  type="button"
+                  class="btn"
                   width="16"
                   height="16"
                   fill="currentColor"
                   class="bi bi-chevron-right"
                   viewBox="0 0 16 16"
-                  data-id="murthy_avsn@tecnics.com"
-                  onclick=handleSave(event)
+                  value="murthy_avsn@tecnics.com"
+                  id="myinput"
+                  onclick="handleClick(this)"
+                  name="user"
+                  data-id=<%= item %>
                 >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-                  />
-                </svg>
-              </div>
-            </a>
-            <li href="#" class="list-group-item list-group-item-action">
-              <div
-                class="d-flex w-100 justify-content-between align-items-center"
-              >
-                <div class="d-flex flex-column w-100">
-                  <h5 class="mb-1">niyati_patel@tecnics.com</h5>
-                  <p class="mb-1">Niyati Patel</p>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-chevron-right"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+                    />
+                  </svg>
+                </button>
                 </div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  class="bi bi-chevron-right"
-                  data-id="niyati_patel@tecnics.com"
-                  onclick=handleSave(event)
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-                  />
-                </svg>
-              </div>
-            </li>
-            <a href="#" class="list-group-item list-group-item-action">
-              <div
-                class="d-flex w-100 justify-content-between align-items-center"
-              >
-                <div class="d-flex flex-column w-100">
-                  <h5 class="mb-1">Swathi_kolli@tecnics.com</h5>
-                  <p class="mb-1">Swathi Kolli</p>
-                </div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  class="bi bi-chevron-right"
-                  data-id="Swathi_kolli@tecnics.com"
-                  onclick=handleSave(event)
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-                  />
-                </svg>
-              </div>
-            </a>  
-        
+                </li>
+            <% }) %>
         </ul>
-        </form>
 
         </div>
 

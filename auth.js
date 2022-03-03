@@ -60,7 +60,7 @@ passport.use(new SamlStrategy(
             return done(new Error("No email found"), null);
         }
         process.nextTick(function() {
-            console.log('process.nextTick' + profile);
+            console.log('process.nextTick',  profile);
             findByEmail(profile.email, function(err, user) {
                 if (err) {
                     return done(err);
