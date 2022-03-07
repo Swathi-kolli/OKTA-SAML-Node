@@ -39,18 +39,19 @@ app.set('views', __dirname);
 app.get('/', auth.protected, function(req, res) {
     res.sendfile('index.html');
 });
+
+app.get('/hi', function(req, res) {
+    res.send('Hello SWathi');
+});
     
 app.get('/home', auth.protected, function(req, res) {
-    const nameId = req.user.nameID
-    console.log("nameId", nameId)
-    const users = db.get().__wrapped__.users
-    console.log("users", users[nameId])   
+    console.log("users", req.user.alternateUsers)   
 
-    res.render('index.html', {users:users[nameId]});
+    res.render('index.html', {users:req.user.alternateUsers});
 });
 
 
-app.post('/update-saml', function(req, res) {
+app.post('/hello', function(req, res) {
     console.log("helloo");
     const dbData = db.get();
     const sessions = dbData.__wrapped__.sessions;
@@ -77,11 +78,6 @@ app.post('/update-saml', function(req, res) {
     });
 });
 
-app.get('/users',auth.protected,function(req, res) {
-    console.log("users based on name", req.user)
-    
-    res.send({users: []});
-});
 
 //auth.authenticate check if you are logged in
 app.get('/login', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function(req, res) {
@@ -90,27 +86,16 @@ app.get('/login', auth.authenticate('saml', { failureRedirect: '/', failureFlash
 
 //POST Method to save the data
 app.post('/save/users', (req, res) => {
-    console.log("REQUEST12333",req.body.user, req.body.session);
-    
-    // getSessionId()
-    
+    // console.log("REQUEST12333",req.body.user, req.body.session);    
     const selectedUsers = req.body.user;
     const sessionId = req.body.session;
     const data = db.get();
-    // console.log("data", data, "wrapped", data.__wrapped__,"sessions",data.__wrapped__.sessions)
     const sessionsData = data.__wrapped__.sessions;
-    // console.log("sessionIDDD", sessionsData);
     sessionsData[sessionId] = selectedUsers;
-    // console.log("UpdatedSessionData", sessionsData);
-    
     
     db.get('sessions').update(sessionsData).write();
-    // console.log("finalData", db.get('sessions'))
-    // res.send("sent");
-    // res.sendStatus(200);
     
     res.redirect('https://dev-18365449.okta.com/home/dev-18365449_nodejs2_1/0oa3z0lu7lkeX3Jtb5d7/aln3z0rta4AiR9OtJ5d7');
-    // res.send("https://dev-18365449.okta.com/home/dev-18365449_nodejs2_1/0oa3z0lu7lkeX3Jtb5d7/aln3z0rta4AiR9OtJ5d7");
 })
 
 //POST Methods, redirect to home successful login
